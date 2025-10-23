@@ -6,8 +6,7 @@ A [cargo crate](https://crates.io/crates/log-assist) library **Async-friendly st
 
 ## ✨ Features
 
-- ✅ **Async-friendly** — Uses Tokio background task and buffered channel  
-- ✅ **Auto app name** — Uses `CARGO_PKG_NAME` automatically  
+- ✅ **Async-friendly** — Uses Tokio background task and buffered channel    
 - ✅ **Safe panic hook** — Sends panic file, line, and message to Seq via blocking client (no runtime issues)  
 - ✅ **Non-blocking logs** — Uses a background flush loop with configurable interval and queue size  
 - ✅ **Zero config for basic use** — Just call `seq::init()` once  
@@ -26,6 +25,10 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
 ## Usage
+
+```bash
+cargo add log-assist
+```
 
 ```rs
 use log_assist::{seq,TimeMode,Config};
