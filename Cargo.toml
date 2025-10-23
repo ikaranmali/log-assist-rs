@@ -1,0 +1,29 @@
+[package]
+name = "log-assist"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Tiny async-friendly logging helper that reads app name from Cargo project"
+repository = "https://example.com/your/repo"
+
+[lib]
+name = "log_assist"
+path = "src/lib.rs"
+
+[dependencies]
+# once_cell = "1.19"
+# serde = { version = "1.0", features = ["derive"] }
+# serde_json = "1.0"
+# tokio = { version = "1.40", features = ["rt", "rt-multi-thread", "macros", "time", "sync"] }
+# # reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
+# time = { version = "0.3", features = ["formatting", "parsing", "macros", "local-offset"] }
+# thiserror = "1.0"
+anyhow = "1.0.100"
+
+reqwest = { version = "0.12", features = ["json", "rustls-tls", "blocking"] }
+time = { version = "0.3", features = ["formatting", "macros", "local-offset"] }
+once_cell = "1.19"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.40", features = ["rt", "rt-multi-thread", "macros", "time", "sync"] }
+thiserror = "1.0"
