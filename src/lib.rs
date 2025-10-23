@@ -27,7 +27,7 @@ use thiserror::Error;
 use tokio::sync::mpsc::{self, Sender};
 use tokio::time::{self, Duration};
 
-const APP_NAME: &str = env!("CARGO_PKG_NAME"); // <-- pulled from your Cargo project name
+const APP_NAME: &str = env!("CARGO_PKG_VERSION"); // <-- pulled from your Cargo project name
 
 static STATE: OnceCell<Arc<SeqState>> = OnceCell::new();
 
@@ -44,6 +44,7 @@ impl Default for TimeMode {
 }
 #[derive(Debug, Clone)]
 pub struct Config {
+    pub application_name: Option<String>, // optional override of app name
     pub endpoint: String,        // e.g., http://seq.yourdomain:5341
     pub api_key: Option<String>, // X-Seq-ApiKey
     pub queue_capacity: usize,   // channel size
@@ -56,6 +57,7 @@ pub struct Config {
 struct SeqState {
     tx: Sender<Event>,
     time_mode: TimeMode, // NEW
+    app_name: String,
 }
 
 #[derive(Debug, Error)]
@@ -123,6 +125,10 @@ pub mod seq {
         let state = Arc::new(SeqState {
             tx,
             time_mode: cfg.time_mode,
+            app_name: cfg
+                .application_name
+                .clone()
+                .unwrap_or_else(|| APP_NAME.to_string()),
         });
         let endpoint = cfg.endpoint.trim_end_matches('/').to_string();
         let api_key = cfg.api_key.clone();
@@ -191,7 +197,7 @@ pub mod seq {
         // Always include app name; user props can override if they *really* want.
         if !properties.get("App").is_some() {
             if let Some(obj) = properties.as_object_mut() {
-                obj.insert("App".into(), json!(APP_NAME));
+                obj.insert("App".into(), json!(state.app_name));
             }
         }
 
@@ -199,7 +205,7 @@ pub mod seq {
             timestamp: now,
             message_template: message.to_string(),
             level: level.to_string(),
-            application: APP_NAME.to_string(),
+            application: state.app_name.to_string(),
             properties,
         };
 
@@ -287,7 +293,7 @@ fn install_panic_hook(config: Config) {
                 timestamp: now_rfc3339(state.time_mode),
                 message_template: "Panic occurred".to_string(),
                 level: "Error".to_string(),
-                application: APP_NAME.to_string(),
+                application: state.app_name.to_string(),
                 properties: serde_json::json!({
                     "location": location,
                     "message": msg,

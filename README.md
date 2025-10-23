@@ -1,6 +1,6 @@
 # log-assist
 
-**Async-friendly structured logger for [Seq](https://datalust.co/seq)** that automatically uses your Cargo project name, and safely reports panics (with file & line) even when the runtime is shutting down.
+A [cargo crate](https://crates.io/crates/log-assist) library **Async-friendly structured logger for [Seq](https://datalust.co/seq)** that automatically uses your Cargo project name, and safely reports panics (with file & line) even when the runtime is shutting down.
 
 ---
 
@@ -19,7 +19,7 @@
 Add to `Cargo.toml`:
 ```toml
 [dependencies]
-log-assist = "0.1"
+log-assist = "0.1.1"
 anyhow = "1.0"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
@@ -33,6 +33,7 @@ use log_assist::{seq,TimeMode,Config};
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     seq::init(Config {
+        application_name: "Log-Assist-Example".to_string().into(),
         endpoint: "http://localhost:5341".into(),
         api_key: None,
         queue_capacity: 10_000,
